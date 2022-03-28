@@ -1,6 +1,0 @@
-﻿  main.cpp
-  example1.cpp
-  example1.hpp
-  Generating Code...
-Debug\example1.obj : warning LNK4042: object specified more than once; extras ignored
-  VS2019_floating_point.vcxproj -> D:\GIT\GitHub\VS2019_floating_point\VS2019_floating_point\Debug\VS2019_floating_point.exe

@@ -1,2 +1,0 @@
-D:\GIT\GitHub\VS2019_floating_point\VS2019_floating_point\Debug\VS2019_floating_point.exe
-D:\GIT\GitHub\VS2019_floating_point\VS2019_floating_point\Debug\VS2019_floating_point.pdb
