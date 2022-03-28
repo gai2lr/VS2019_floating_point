@@ -2,6 +2,9 @@
 using namespace std;
 
 #define rbp_mtl_Square_mac(x)       ( (x) * (x) )
+#define rbp_mtl_Abs_f32_mac(x)      (((x) >= (0.0f)) ? (x) : (-(x)))
+#define rbp_MAX_du8                 ((unsigned char)0xFF)
+#define rbp_MAX_ds32                ((signed long)2147483647)
 
 typedef struct rbp_Tag_Point_st
 {
@@ -90,7 +93,7 @@ void initExample1_TC2(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
   f_RegSumTargetOutput_pcst->SumDeltaYY_s32 = (637295 + 158886) / 4;
   f_RegSumTargetOutput_pcst->SumDeltaXY_s32 = (496288 - 97580) / 4;
 
-  cout << "Test case 2\n";
+  cout << "\nTest case 2\n";
 }
 
 void initExample1_TC3(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
@@ -126,7 +129,7 @@ void initExample1_TC3(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
   f_RegSumTargetOutput_pcst->SumDeltaYY_s32 = (637295 + 657499);
   f_RegSumTargetOutput_pcst->SumDeltaXY_s32 = (496288 + 505914);
 
-  cout << "Test case 3\n";
+  cout << "\nTest case 3\n";
 }
 
 void example1(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
@@ -159,19 +162,50 @@ void example1(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
     - (l_Sxi_f32 * (l_ybr_f32 - l_yr_f32)))
     + (float)f_RegSumToMerge_pcst->SumDeltaXY_s32;
 
-  const float l_TargetSx_f32 = (float)(f_RegSumTarget_pcst->SumDeltaX_s32) + l_NewSx_f32;
-  const float l_TargetSy_f32 = (float)(f_RegSumTarget_pcst->SumDeltaY_s32) + l_NewSy_f32;
-  const float l_TargetSxx_f32 = (float)(f_RegSumTarget_pcst->SumDeltaXX_s32) + l_NewSxx_f32;
-  const float l_TargetSyy_f32 = (float)(f_RegSumTarget_pcst->SumDeltaYY_s32) + l_NewSyy_f32;
-  const float l_TargetSxy_f32 = (float)(f_RegSumTarget_pcst->SumDeltaXY_s32) + l_NewSxy_f32;
-  const unsigned short l_OldTargetNum_cu16 = f_RegSumTarget_pcst->Num_u16;
+  if ((f_RegSumTarget_pcst->Num_u16 >= (unsigned short)rbp_MAX_du8) && (f_RegSumToMerge_pcst->Num_u16 < (unsigned short)rbp_MAX_du8))
+  {
+    l_NewSx_f32 = l_NewSx_f32 / 2.f;
+    l_NewSy_f32 = l_NewSy_f32 / 2.f;
+    l_NewSxx_f32 = l_NewSxx_f32 / 4.f;
+    l_NewSyy_f32 = l_NewSyy_f32 / 4.f;
+    l_NewSxy_f32 = l_NewSxy_f32 / 4.f;
+  }
 
-  f_RegSumTarget_pcst->SumDeltaX_s32 = (signed long)l_TargetSx_f32;
-  f_RegSumTarget_pcst->SumDeltaY_s32 = (signed long)l_TargetSy_f32;
-  f_RegSumTarget_pcst->SumDeltaXX_s32 = (signed long)l_TargetSxx_f32;
-  f_RegSumTarget_pcst->SumDeltaYY_s32 = (signed long)l_TargetSyy_f32;
-  f_RegSumTarget_pcst->SumDeltaXY_s32 = (signed long)l_TargetSxy_f32;
-  f_RegSumTarget_pcst->Num_u16 += f_RegSumToMerge_pcst->Num_u16;
+  {
+    const float l_TargetSx_f32 = (float)(f_RegSumTarget_pcst->SumDeltaX_s32) + l_NewSx_f32;
+    const float l_TargetSy_f32 = (float)(f_RegSumTarget_pcst->SumDeltaY_s32) + l_NewSy_f32;
+    const float l_TargetSxx_f32 = (float)(f_RegSumTarget_pcst->SumDeltaXX_s32) + l_NewSxx_f32;
+    const float l_TargetSyy_f32 = (float)(f_RegSumTarget_pcst->SumDeltaYY_s32) + l_NewSyy_f32;
+    const float l_TargetSxy_f32 = (float)(f_RegSumTarget_pcst->SumDeltaXY_s32) + l_NewSxy_f32;
+    const float l_S32Max_cf32 = (float)rbp_MAX_ds32;
+
+    if ((rbp_mtl_Abs_f32_mac(l_TargetSx_f32) < l_S32Max_cf32)
+      && (rbp_mtl_Abs_f32_mac(l_TargetSy_f32) < l_S32Max_cf32)
+      && (rbp_mtl_Abs_f32_mac(l_TargetSxx_f32) < l_S32Max_cf32)
+      && (rbp_mtl_Abs_f32_mac(l_TargetSyy_f32) < l_S32Max_cf32)
+      && (rbp_mtl_Abs_f32_mac(l_TargetSxy_f32) < l_S32Max_cf32))
+    {
+      const unsigned short l_OldTargetNum_cu16 = f_RegSumTarget_pcst->Num_u16;
+
+      f_RegSumTarget_pcst->SumDeltaX_s32 = (signed long)l_TargetSx_f32;
+      f_RegSumTarget_pcst->SumDeltaY_s32 = (signed long)l_TargetSy_f32;
+      f_RegSumTarget_pcst->SumDeltaXX_s32 = (signed long)l_TargetSxx_f32;
+      f_RegSumTarget_pcst->SumDeltaYY_s32 = (signed long)l_TargetSyy_f32;
+      f_RegSumTarget_pcst->SumDeltaXY_s32 = (signed long)l_TargetSxy_f32;
+      f_RegSumTarget_pcst->Num_u16 += f_RegSumToMerge_pcst->Num_u16;
+
+      // If the regression some where small before the merge, but exceed 255 elements with the merge, reduce the sums
+      if ((l_OldTargetNum_cu16 < (unsigned short)rbp_MAX_du8)
+        && (f_RegSumTarget_pcst->Num_u16 >= (unsigned short)rbp_MAX_du8))
+      {
+        f_RegSumTarget_pcst->SumDeltaX_s32 = f_RegSumTarget_pcst->SumDeltaX_s32 / ((signed long)2);
+        f_RegSumTarget_pcst->SumDeltaY_s32 = f_RegSumTarget_pcst->SumDeltaY_s32 / ((signed long)2);
+        f_RegSumTarget_pcst->SumDeltaXX_s32 = f_RegSumTarget_pcst->SumDeltaXX_s32 / ((signed long)4);
+        f_RegSumTarget_pcst->SumDeltaXY_s32 = f_RegSumTarget_pcst->SumDeltaXY_s32 / ((signed long)4);
+        f_RegSumTarget_pcst->SumDeltaYY_s32 = f_RegSumTarget_pcst->SumDeltaYY_s32 / ((signed long)4);
+      }
+    }
+  }
 }
 
 void checkOutputExample1(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
@@ -239,7 +273,15 @@ int main()
 {
   rbp_Type_ehy_Regression_st l_RegSumToMerge_st, l_RegSumTarget_st, l_RegSumTargetOutput_st;
 
+  initExample1_TC1(&l_RegSumToMerge_st, &l_RegSumTarget_st, &l_RegSumTargetOutput_st);
+  example1(&l_RegSumToMerge_st, &l_RegSumTarget_st);
+  checkOutputExample1(&l_RegSumToMerge_st, &l_RegSumTarget_st, &l_RegSumTargetOutput_st);
+
   initExample1_TC2(&l_RegSumToMerge_st, &l_RegSumTarget_st, &l_RegSumTargetOutput_st);
+  example1(&l_RegSumToMerge_st, &l_RegSumTarget_st);
+  checkOutputExample1(&l_RegSumToMerge_st, &l_RegSumTarget_st, &l_RegSumTargetOutput_st);
+
+  initExample1_TC3(&l_RegSumToMerge_st, &l_RegSumTarget_st, &l_RegSumTargetOutput_st);
   example1(&l_RegSumToMerge_st, &l_RegSumTarget_st);
   checkOutputExample1(&l_RegSumToMerge_st, &l_RegSumTarget_st, &l_RegSumTargetOutput_st);
 
