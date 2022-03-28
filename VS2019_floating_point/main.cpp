@@ -87,11 +87,11 @@ void initExample1_TC2(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
   f_RegSumTargetOutput_pcst->Num_u16 = 305;
   f_RegSumTargetOutput_pcst->Point1st_st.X_s16 = 14652;
   f_RegSumTargetOutput_pcst->Point1st_st.Y_s16 = -28493;
-  f_RegSumTargetOutput_pcst->SumDeltaX_s32 = (565 - 572) / 2;
-  f_RegSumTargetOutput_pcst->SumDeltaY_s32 = (834 + 894) / 2;
-  f_RegSumTargetOutput_pcst->SumDeltaXX_s32 = (268235 + 68665) / 4;
-  f_RegSumTargetOutput_pcst->SumDeltaYY_s32 = (637295 + 158886) / 4;
-  f_RegSumTargetOutput_pcst->SumDeltaXY_s32 = (496288 - 97580) / 4;
+  f_RegSumTargetOutput_pcst->SumDeltaX_s32 = 565 - (572 / 2);
+  f_RegSumTargetOutput_pcst->SumDeltaY_s32 = 834 + (894 / 2);
+  f_RegSumTargetOutput_pcst->SumDeltaXX_s32 = 268235 + (68665 / 4);
+  f_RegSumTargetOutput_pcst->SumDeltaYY_s32 = 637295 + (158886 / 4);
+  f_RegSumTargetOutput_pcst->SumDeltaXY_s32 = 496288 - (97580 / 4);
 
   cout << "\nTest case 2\n";
 }

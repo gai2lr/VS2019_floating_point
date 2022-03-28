@@ -1,0 +1,8 @@
+
+*.ipch
+*.VC.*
+*.pdb
+*.dll
+*.obj
+**/Debug
+**/v16
