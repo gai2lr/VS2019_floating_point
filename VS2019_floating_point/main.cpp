@@ -23,6 +23,27 @@ typedef struct rbp_Tag_ehy_Regression_st
   unsigned short Num_u16;
 } rbp_Type_ehy_Regression_st;
 
+typedef struct rbp_Tag_PointFl_st
+{
+	float X_f32;
+	float Y_f32;
+} rbp_Type_PointFl_st;
+
+typedef struct rbp_Tag_CircleFl_st
+{
+	rbp_Type_PointFl_st P_st;
+	float R_f32;
+} rbp_Type_CircleFl_st;
+
+typedef struct rbp_Tag_ehy_CircleRegression_st
+{
+	rbp_Tag_CircleFl_st Circle1_st;
+	rbp_Tag_CircleFl_st Circle2_st;
+	float DistP1P2_f32;
+  float Num_f32;
+} rbp_Tag_ehy_CircleRegression_st;
+
+#define rbp_mtl_Square_mac(x)       ( (x) * (x) )
 
 void initExample1_TC1(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
   rbp_Type_ehy_Regression_st* const f_RegSumTarget_pcst,
@@ -130,6 +151,46 @@ void initExample1_TC3(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
   f_RegSumTargetOutput_pcst->SumDeltaXY_s32 = (496288 + 505914);
 
   cout << "\nTest case 3\n";
+}
+
+void initExample1_TC4(rbp_Tag_ehy_CircleRegression_st* const f_Input_pcst,
+	rbp_Tag_ehy_CircleRegression_st* const f_Target_pcst,
+	rbp_Tag_ehy_CircleRegression_st* const f_Output_pcst)
+{
+  // Inputs
+  f_Input_pcst->Circle1_st.R_f32 = 10000.0f;
+  f_Input_pcst->Circle2_st.R_f32 = 10610.0f;
+  f_Input_pcst->DistP1P2_f32 = 610.0f;
+  f_Input_pcst->DistP1P2_f32 = 610.0f;
+  f_Input_pcst->Num_f32 = 0.0f;
+
+  // Target
+  f_Target_pcst->Num_f32 = 0.0f;
+
+  // Expected output
+  f_Output_pcst->Num_f32 = -10000.0f;
+
+  cout << "\nTest case 4\n";
+}
+
+void initExample1_TC5(rbp_Tag_ehy_CircleRegression_st* const f_Input_pcst,
+  rbp_Tag_ehy_CircleRegression_st* const f_Target_pcst,
+  rbp_Tag_ehy_CircleRegression_st* const f_Output_pcst)
+{
+  // Inputs
+  f_Input_pcst->Circle1_st.R_f32 = 10000.0f;
+  f_Input_pcst->Circle2_st.R_f32 = 10610.0f;
+  f_Input_pcst->DistP1P2_f32 = 610.0f;
+  f_Input_pcst->DistP1P2_f32 = 610.0f;
+  f_Input_pcst->Num_f32 = 0.0f;
+
+  // Target
+  f_Target_pcst->Num_f32 = 0.0f;
+
+  // Expected output
+  f_Output_pcst->Num_f32 = -10000.0f;
+
+  cout << "\nTest case 5\n";
 }
 
 void example1(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
@@ -269,9 +330,37 @@ void checkOutputExample1(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
   }
 }
 
+void example2(rbp_Tag_ehy_CircleRegression_st* const f_Input_pcst,
+	rbp_Tag_ehy_CircleRegression_st* const f_Output_pcst)
+{
+	f_Output_pcst->Num_f32 = (((rbp_mtl_Square_mac(f_Input_pcst->Circle1_st.R_f32) - rbp_mtl_Square_mac(f_Input_pcst->Circle2_st.R_f32)) /
+		f_Input_pcst->DistP1P2_f32) + f_Input_pcst->DistP1P2_f32) / 2.0f;
+}
+
+void example3(rbp_Tag_ehy_CircleRegression_st* const f_Input_pcst,
+  rbp_Tag_ehy_CircleRegression_st* const f_Output_pcst)
+{
+  f_Output_pcst->Num_f32 = (((pow(f_Input_pcst->Circle1_st.R_f32,2) - pow(f_Input_pcst->Circle2_st.R_f32,2)) /
+    f_Input_pcst->DistP1P2_f32) + f_Input_pcst->DistP1P2_f32) / 2.0f;
+}
+
+
+void checkOutputExample2(rbp_Tag_ehy_CircleRegression_st* const f_Input_pcst,
+	rbp_Tag_ehy_CircleRegression_st* const f_Target_pcst,
+	rbp_Tag_ehy_CircleRegression_st* const f_Output_pcst)
+{
+	if (f_Target_pcst->Num_f32 != f_Output_pcst->Num_f32)
+	{
+		cout << "Different number of merged points expected\n";
+		cout << "Expected: " << f_Target_pcst->Num_f32 << "\n";
+		cout << "Actual: " << f_Output_pcst->Num_f32 << "\n";
+	}
+}
+
 int main()
 {
   rbp_Type_ehy_Regression_st l_RegSumToMerge_st, l_RegSumTarget_st, l_RegSumTargetOutput_st;
+  rbp_Tag_ehy_CircleRegression_st f_Input_pcst, f_Target_pcst, f_Output_pcst;
 
   initExample1_TC1(&l_RegSumToMerge_st, &l_RegSumTarget_st, &l_RegSumTargetOutput_st);
   example1(&l_RegSumToMerge_st, &l_RegSumTarget_st);
@@ -285,6 +374,13 @@ int main()
   example1(&l_RegSumToMerge_st, &l_RegSumTarget_st);
   checkOutputExample1(&l_RegSumToMerge_st, &l_RegSumTarget_st, &l_RegSumTargetOutput_st);
 
+  initExample1_TC4(&f_Input_pcst, &f_Target_pcst, &f_Output_pcst);
+  example2(&f_Input_pcst, &f_Target_pcst);
+  checkOutputExample2(&f_Input_pcst, &f_Target_pcst, &f_Output_pcst);
+
+  initExample1_TC5(&f_Input_pcst, &f_Target_pcst, &f_Output_pcst);
+  example3(&f_Input_pcst, &f_Target_pcst);
+  checkOutputExample2(&f_Input_pcst, &f_Target_pcst, &f_Output_pcst);
 
   return 0;
 }
