@@ -43,8 +43,6 @@ typedef struct rbp_Tag_ehy_CircleRegression_st
   float Num_f32;
 } rbp_Tag_ehy_CircleRegression_st;
 
-#define rbp_mtl_Square_mac(x)       ( (x) * (x) )
-
 void initExample1_TC1(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
   rbp_Type_ehy_Regression_st* const f_RegSumTarget_pcst,
   rbp_Type_ehy_Regression_st* const f_RegSumTargetOutput_pcst)
@@ -361,6 +359,17 @@ int main()
 {
   rbp_Type_ehy_Regression_st l_RegSumToMerge_st, l_RegSumTarget_st, l_RegSumTargetOutput_st;
   rbp_Tag_ehy_CircleRegression_st f_Input_pcst, f_Target_pcst, f_Output_pcst;
+
+  // expected 112.572.100,0 actual : 112572096
+  float test = 10610.0;
+  float x1 = test * test;
+  float x2 = (float)rbp_mtl_Square_mac(test);
+  float y = 112572100.0;
+
+  double test_d = 10610.0;
+  double x1_d = test * test;
+  double x2_d = (double)rbp_mtl_Square_mac(test);
+  double y_d = 112572100.0;
 
   initExample1_TC1(&l_RegSumToMerge_st, &l_RegSumTarget_st, &l_RegSumTargetOutput_st);
   example1(&l_RegSumToMerge_st, &l_RegSumTarget_st);
