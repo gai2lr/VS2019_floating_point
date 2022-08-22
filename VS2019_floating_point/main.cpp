@@ -212,14 +212,30 @@ void example1(rbp_Type_ehy_Regression_st* const f_RegSumToMerge_pcst,
     - (2.f * (l_Sxi_f32 * (l_xbr_f32 - l_xr_f32))))
     + (float)f_RegSumToMerge_pcst->SumDeltaXX_s32);
 
+  float test = 2.f * l_Sxi_f32 * (l_xbr_f32 - l_xr_f32);
+  double test_d = 2.0 * (double)l_Sxi_f32 * ((double)l_xbr_f32 - (double)l_xr_f32);
+
+  double l_NewSxx_d = ((((double)l_N_f32 * (rbp_mtl_Square_mac((double)l_xbr_f32) - rbp_mtl_Square_mac((double)l_xr_f32)))
+    - (2.f * ((double)l_Sxi_f32 * ((double)l_xbr_f32 - (double)l_xr_f32))))
+    + (double)f_RegSumToMerge_pcst->SumDeltaXX_s32);
+
   float l_NewSyy_f32 = ((l_N_f32 * (rbp_mtl_Square_mac(l_ybr_f32) - rbp_mtl_Square_mac(l_yr_f32)))
     - (2.f * (l_Syi_f32 * (l_ybr_f32 - l_yr_f32))))
     + (float)f_RegSumToMerge_pcst->SumDeltaYY_s32;
+
+  double l_NewSyy_d = (((double)l_N_f32 * (rbp_mtl_Square_mac((double)l_ybr_f32) - rbp_mtl_Square_mac((double)l_yr_f32)))
+    - (2.f * ((double)l_Syi_f32 * ((double)l_ybr_f32 - (double)l_yr_f32))))
+    + (double)f_RegSumToMerge_pcst->SumDeltaYY_s32;
 
   float l_NewSxy_f32 = (((l_N_f32 * ((l_xbr_f32 * l_ybr_f32) - (l_xr_f32 * l_yr_f32)))
     - (l_Syi_f32 * (l_xbr_f32 - l_xr_f32)))
     - (l_Sxi_f32 * (l_ybr_f32 - l_yr_f32)))
     + (float)f_RegSumToMerge_pcst->SumDeltaXY_s32;
+
+  double l_NewSxy_d = ((((double)l_N_f32 * (((double)l_xbr_f32 * (double)l_ybr_f32) - ((double)l_xr_f32 * (double)l_yr_f32)))
+    - ((double)l_Syi_f32 * ((double)l_xbr_f32 - (double)l_xr_f32)))
+    - ((double)l_Sxi_f32 * ((double)l_ybr_f32 - (double)l_yr_f32)))
+    + (double)f_RegSumToMerge_pcst->SumDeltaXY_s32;
 
   if ((f_RegSumTarget_pcst->Num_u16 >= (unsigned short)rbp_MAX_du8) && (f_RegSumToMerge_pcst->Num_u16 < (unsigned short)rbp_MAX_du8))
   {
